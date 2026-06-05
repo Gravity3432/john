@@ -57,13 +57,13 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);mi
 /* STARTUP */
 #startup{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s .2s,visibility .8s .2s}
 #startup.done{opacity:0;visibility:hidden;pointer-events:none}
-.su-logo{font-family:var(--font-gothic);font-size:clamp(40px,10vw,88px);color:#fff;opacity:0;animation:suLogo 1s .3s both}
+.su-logo{font-family:var(--font-gothic);font-size:clamp(40px,10vw,88px);color:#fff;opacity:0;animation:suLogo .7s .1s both}
 @keyframes suLogo{0%{opacity:0;filter:blur(20px);letter-spacing:24px}100%{opacity:1;filter:none;letter-spacing:6px}}
-.su-tag{font-family:var(--font-title);font-size:clamp(8px,2vw,12px);letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.3);opacity:0;animation:suTag .6s 1.1s both;margin-top:10px}
+.su-tag{font-family:var(--font-title);font-size:clamp(8px,2vw,12px);letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.3);opacity:0;animation:suTag .4s .7s both;margin-top:10px}
 @keyframes suTag{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.su-bar{width:190px;height:2px;background:rgba(255,255,255,.08);border-radius:1px;margin-top:36px;overflow:hidden;opacity:0;animation:suBarIn .3s 1.3s both}
+.su-bar{width:190px;height:2px;background:rgba(255,255,255,.08);border-radius:1px;margin-top:36px;overflow:hidden;opacity:0;animation:suBarIn .2s .9s both}
 @keyframes suBarIn{to{opacity:1}}
-.su-fill{height:100%;background:linear-gradient(90deg,transparent,#c0152a,transparent);animation:suFill 1.2s 1.4s both}
+.su-fill{height:100%;background:linear-gradient(90deg,transparent,#c0152a,transparent);animation:suFill .8s 1.0s both}
 @keyframes suFill{from{width:0}to{width:100%}}
 #su-canvas{position:absolute;inset:0;pointer-events:none}
 /* CANVAS/FOG */
@@ -843,15 +843,12 @@ button,a,[role=button]{outline:none}
 <script>
 const TMDB='https://api.themoviedb.org/3',IMG='https://image.tmdb.org/t/p',KEY='8265bd1679663a7ea12ac168da84d2e8';
 const EMOJIS=['&#x1FA78;','&#x1F987;','&#x1F480;','&#x1F56F;&#xFE0F;','&#x1F319;','&#x26B0;&#xFE0F;','&#x1F52E;','&#x1F578;&#xFE0F;','&#x1F339;','&#x1F5E1;&#xFE0F;','&#x1F441;&#xFE0F;','&#x1F311;'];
-const SOURCES=[
 // Accent color for VidLink theming (read from CSS var at runtime)
 function accentHex(){
   const s=getComputedStyle(document.documentElement);
   const ab=s.getPropertyValue('--accent-bright').trim();
-  // ab is like #c0152a — strip the #
   return ab.replace('#','') || 'c0152a';
 }
-
 const SOURCES=[
   // ── Tier 1: No redirects, clean player ────────────────────────────────────
   {name:'VidLink',
@@ -930,8 +927,13 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
       ctx.beginPath();ctx.moveTo(d.x+wx,0);ctx.lineTo(d.x+wx,d.len);ctx.strokeStyle=g;ctx.lineWidth=d.w;ctx.lineCap='round';ctx.stroke()});
     raf=requestAnimationFrame(draw)}
   raf=requestAnimationFrame(draw);
-  setTimeout(()=>{cancelAnimationFrame(raf);document.getElementById('startup').classList.add('done');setTimeout(()=>document.getElementById('startup').style.display='none',1000)},2700);
+  setTimeout(()=>{cancelAnimationFrame(raf);document.getElementById('startup').classList.add('done');setTimeout(()=>document.getElementById('startup').style.display='none',600)},1800);
 })();
+// Hard failsafe: always dismiss startup after 4s no matter what
+setTimeout(()=>{
+  const s=document.getElementById('startup');
+  if(s&&s.style.display!=='none'){s.classList.add('done');setTimeout(()=>s.style.display='none',600)}
+},4000);
 // AMBIENT DRIPS
 (function(){
   const c=document.getElementById('blood-canvas'),ctx=c.getContext('2d');
