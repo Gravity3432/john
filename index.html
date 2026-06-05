@@ -127,24 +127,86 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);mi
   position:relative;z-index:2;
   font-family:var(--font-gothic);
   font-size:clamp(44px,11vw,96px);
-  color:#fff;
-  text-shadow:0 0 40px rgba(192,21,42,.8),0 0 80px rgba(139,0,0,.4);
+  color:#3a0a0f;
+  text-shadow:0 0 30px rgba(80,5,10,.6),0 0 60px rgba(50,2,6,.3);
   animation:suLogoReveal .9s .3s both;
   letter-spacing:4px;
 }
 @keyframes suLogoReveal{
-  0%{opacity:0;filter:blur(24px);letter-spacing:28px;transform:scale(1.1)}
-  100%{opacity:1;filter:none;letter-spacing:4px;transform:scale(1)}
+  0%{opacity:0;filter:blur(24px);letter-spacing:28px;transform:scale(1.1);color:#1a0205}
+  60%{color:#3a0a0f}
+  100%{opacity:1;filter:none;letter-spacing:4px;transform:scale(1);color:#3a0a0f}
 }
 .su-tag{
   position:relative;z-index:2;
-  font-family:var(--font-title);font-size:clamp(8px,1.8vw,12px);
-  letter-spacing:5px;text-transform:uppercase;
-  color:rgba(255,255,255,.35);
-  margin-top:12px;
-  animation:suTagReveal .5s .9s both;
+  font-family:var(--font-title);font-size:clamp(11px,2.2vw,16px);
+  letter-spacing:7px;text-transform:uppercase;
+  color:transparent;
+  margin-top:18px;
+  white-space:nowrap;
+  overflow:visible;
+  clip-path:inset(0 100% 0 0);
+  /* ONLY .su-tag gets these effects — Bloodscreen logo has none */
+  animation:
+    suTagWipe     1.1s 1.0s cubic-bezier(.16,1,.3,1) forwards,
+    suTagGlowBurst 0.8s 2.1s ease-out             forwards;
 }
-@keyframes suTagReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes suTagWipe{
+  0%  {clip-path:inset(0 100% 0 0);color:transparent;transform:translateX(-6px)}
+  20% {color:rgba(100,0,10,.6)}
+  100%{clip-path:inset(0 0% 0 0);color:rgba(139,0,15,.85);transform:translateX(0)}
+}
+/* RED chroma channel — splits left */
+.su-tag::before{
+  content:attr(data-text);
+  position:absolute;inset:0;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  white-space:nowrap;color:transparent;
+  -webkit-text-stroke:1.5px rgba(255,30,80,0);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  animation:suChromaRed 1.0s 2.1s cubic-bezier(.2,0,.1,1) forwards;
+}
+@keyframes suChromaRed{
+  0% {opacity:0;-webkit-text-stroke:0px transparent;transform:translate(0,0);filter:none}
+  15%{opacity:1;-webkit-text-stroke:2.5px rgba(200,0,20,1);transform:translate(-6px,-1px);filter:drop-shadow(0 0 12px rgba(220,0,20,.9)) drop-shadow(0 0 28px rgba(160,0,10,.6))}
+  45%{opacity:.9;-webkit-text-stroke:2px rgba(180,0,15,.8);transform:translate(-9px,1px);filter:drop-shadow(0 0 16px rgba(200,0,20,.7))}
+  75%{opacity:.3;-webkit-text-stroke:.5px rgba(150,0,10,.2);transform:translate(-2px,0);filter:none}
+  100%{opacity:0;-webkit-text-stroke:0px transparent;transform:translate(0,0)}
+}
+/* CYAN chroma channel — splits right */
+.su-tag::after{
+  content:attr(data-text);
+  position:absolute;inset:0;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  white-space:nowrap;color:transparent;
+  -webkit-text-stroke:1.5px rgba(0,220,255,0);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  animation:suChromaCyan 1.0s 2.1s cubic-bezier(.2,0,.1,1) forwards,
+            suTagRingBurst 1.0s 2.1s ease-out forwards;
+}
+@keyframes suChromaCyan{
+  0% {opacity:0;-webkit-text-stroke:0px transparent;transform:translate(0,0);filter:none}
+  15%{opacity:1;-webkit-text-stroke:2px rgba(0,220,255,.95);transform:translate(5px,1px);filter:drop-shadow(0 0 10px rgba(0,220,255,.8)) drop-shadow(0 0 24px rgba(0,180,255,.5))}
+  45%{opacity:.85;-webkit-text-stroke:1.5px rgba(0,200,255,.7);transform:translate(8px,-1px);filter:drop-shadow(0 0 14px rgba(0,220,255,.6))}
+  75%{opacity:.3;-webkit-text-stroke:.5px rgba(0,220,255,.2);transform:translate(2px,0);filter:none}
+  100%{opacity:0;-webkit-text-stroke:0px transparent;transform:translate(0,0)}
+}
+/* Shockwave outline ring that expands outward on explosion */
+@keyframes suTagRingBurst{
+  0%  {box-shadow:none;outline:0px solid rgba(255,255,255,0)}
+  20% {outline:2px solid rgba(255,255,255,.9);outline-offset:4px;box-shadow:0 0 20px rgba(255,255,255,.4),0 0 40px rgba(192,21,42,.5)}
+  50% {outline:1.5px solid rgba(192,21,42,.6);outline-offset:10px;box-shadow:0 0 30px rgba(192,21,42,.4)}
+  100%{outline:0px solid rgba(192,21,42,0);outline-offset:20px;box-shadow:none}
+}
+/* su-tag animations merged into base rule above */
+@keyframes suTagGlowBurst{
+  0%  {text-shadow:none}
+  20% {text-shadow:0 0 8px rgba(192,21,42,.95), 0 0 22px rgba(139,0,0,.8), 0 0 44px rgba(80,0,5,.6), -4px 0 8px rgba(255,30,80,.6), 4px 0 8px rgba(0,220,255,.5)}
+  55% {text-shadow:0 0 10px rgba(139,0,0,.5), 0 0 24px rgba(80,0,5,.35)}
+  100%{text-shadow:0 0 4px rgba(100,0,10,.3);color:rgba(139,0,15,.85)}
+}
 
 /* Progress bar */
 .su-bar{
@@ -773,7 +835,7 @@ button,a,[role=button]{outline:none}
   <div class="su-drips"><div class="su-drip" style="left:5%;--d:2.8s;--delay:0.0s"></div><div class="su-drip" style="left:12%;--d:3.5s;--delay:0.4s"></div><div class="su-drip" style="left:19%;--d:2.2s;--delay:0.8s"></div><div class="su-drip" style="left:27%;--d:4.1s;--delay:0.2s"></div><div class="su-drip" style="left:35%;--d:2.6s;--delay:1.1s"></div><div class="su-drip" style="left:43%;--d:3.8s;--delay:0.6s"></div><div class="su-drip" style="left:51%;--d:2.4s;--delay:1.4s"></div><div class="su-drip" style="left:59%;--d:3.2s;--delay:0.1s"></div><div class="su-drip" style="left:67%;--d:4.4s;--delay:0.9s"></div><div class="su-drip" style="left:75%;--d:2.9s;--delay:1.6s"></div><div class="su-drip" style="left:82%;--d:3.6s;--delay:0.3s"></div><div class="su-drip" style="left:88%;--d:2.1s;--delay:1.2s"></div><div class="su-drip" style="left:93%;--d:4.8s;--delay:0.7s"></div><div class="su-drip" style="left:97%;--d:3.0s;--delay:1.5s"></div><div class="su-drip" style="left:3%;--d:2.7s;--delay:1.8s"></div><div class="su-drip" style="left:15%;--d:3.9s;--delay:2.0s"></div><div class="su-drip" style="left:22%;--d:2.5s;--delay:0.5s"></div><div class="su-drip" style="left:48%;--d:4.2s;--delay:1.3s"></div><div class="su-drip" style="left:63%;--d:2.3s;--delay:1.7s"></div><div class="su-drip" style="left:78%;--d:3.4s;--delay:0.4s"></div></div>
   <div id="particles-startup"><div class="su-particle" style="left:8%;--d:3s;--delay:2.1s;width:3px;height:3px"></div><div class="su-particle" style="left:15%;--d:4s;--delay:4.2s;width:4px;height:4px"></div><div class="su-particle" style="left:25%;--d:3s;--delay:7.1s;width:2px;height:2px"></div><div class="su-particle" style="left:33%;--d:5s;--delay:1.8s;width:3px;height:3px"></div><div class="su-particle" style="left:42%;--d:4s;--delay:5.5s;width:4px;height:4px"></div><div class="su-particle" style="left:54%;--d:3s;--delay:0.6s;width:3px;height:3px"></div><div class="su-particle" style="left:61%;--d:6s;--delay:3.3s;width:4px;height:4px"></div><div class="su-particle" style="left:71%;--d:3s;--delay:6.9s;width:2px;height:2px"></div><div class="su-particle" style="left:79%;--d:4s;--delay:2.7s;width:3px;height:3px"></div><div class="su-particle" style="left:87%;--d:5s;--delay:4.8s;width:4px;height:4px"></div><div class="su-particle" style="left:95%;--d:3s;--delay:1.2s;width:3px;height:3px"></div><div class="su-particle" style="left:47%;--d:4s;--delay:8.1s;width:3px;height:3px"></div><div class="su-particle" style="left:38%;--d:3s;--delay:3.9s;width:2px;height:2px"></div><div class="su-particle" style="left:20%;--d:5s;--delay:6.2s;width:3px;height:3px"></div><div class="su-particle" style="left:68%;--d:4s;--delay:0.3s;width:4px;height:4px"></div><div class="su-particle" style="left:84%;--d:3s;--delay:5.1s;width:3px;height:3px"></div></div>
   <div class="su-logo">Bloodscreen</div>
-  <div class="su-tag">Where every night is a premiere</div>
+  <div class="su-tag" data-text="johnthemailboy">johnthemailboy</div>
   <div class="su-bar"><div class="su-fill"></div></div>
 </div>
 <canvas id="blood-canvas"></canvas>
